@@ -1,10 +1,12 @@
 package com.supermarket.pos;
 
 import com.supermarket.pos.controller.PosController;
+import com.supermarket.pos.controller.ProductManagementController;
 import com.supermarket.pos.util.DatabaseManager;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 
 /**
@@ -17,9 +19,17 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         try {
             DatabaseManager.initializeDatabase();
-            PosController controller = new PosController();
-            BorderPane root = controller.getRoot();
-            Scene scene = new Scene(root, 1100, 720);
+            PosController posController = new PosController();
+            ProductManagementController productController = new ProductManagementController();
+
+            TabPane tabPane = new TabPane();
+            Tab posTab = new Tab("POS", posController.getRoot());
+            Tab productsTab = new Tab("Products", productController.getRoot());
+            posTab.setClosable(false);
+            productsTab.setClosable(false);
+            tabPane.getTabs().addAll(posTab, productsTab);
+
+            Scene scene = new Scene(tabPane, 1200, 760);
 
             primaryStage.setTitle("Supermarket POS System");
             primaryStage.setScene(scene);
