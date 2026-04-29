@@ -26,17 +26,19 @@ public class DatabaseManager {
      * Establish a database connection
      */
     public static Connection connect() throws SQLException {
-        try {
-            if (connection == null || connection.isClosed()) {
-                connection = DriverManager.getConnection(DATABASE_URL);
-                System.out.println("✓ Connected to database: " + DATABASE_URL);
-            }
-        } catch (SQLException e) {
-            System.err.println("✗ Connection error: " + e.getMessage());
-            throw e;
+    try {
+        Class.forName("org.sqlite.JDBC");   
+
+        if (connection == null || connection.isClosed()) {
+            connection = DriverManager.getConnection(DATABASE_URL);
         }
-        return connection;
+
+    } catch (ClassNotFoundException e) {
+        throw new SQLException("SQLite JDBC Driver not found", e);
     }
+
+    return connection;
+}
 
     /**
      * Get the active database connection
