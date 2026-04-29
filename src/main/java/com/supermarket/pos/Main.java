@@ -1,6 +1,7 @@
 package com.supermarket.pos;
 
 import com.supermarket.pos.controller.PosController;
+import com.supermarket.pos.controller.InventoryController;
 import com.supermarket.pos.controller.ProductManagementController;
 import com.supermarket.pos.util.DatabaseManager;
 import javafx.application.Application;
@@ -21,13 +22,16 @@ public class Main extends Application {
             DatabaseManager.initializeDatabase();
             PosController posController = new PosController();
             ProductManagementController productController = new ProductManagementController();
+            InventoryController inventoryController = new InventoryController();
 
             TabPane tabPane = new TabPane();
             Tab posTab = new Tab("POS", posController.getRoot());
             Tab productsTab = new Tab("Products", productController.getRoot());
+            Tab inventoryTab = new Tab("Inventory", inventoryController.getRoot());
             posTab.setClosable(false);
             productsTab.setClosable(false);
-            tabPane.getTabs().addAll(posTab, productsTab);
+            inventoryTab.setClosable(false);
+            tabPane.getTabs().addAll(posTab, productsTab, inventoryTab);
 
             Scene scene = new Scene(tabPane, 1200, 760);
 
