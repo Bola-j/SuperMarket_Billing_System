@@ -96,6 +96,15 @@ public class ProductManagementController extends BaseController {
         if (barcode.isEmpty()) {
             throw new IllegalArgumentException("Barcode is required.");
         }
+        if (purchasePrice <= 0) {
+            throw new IllegalArgumentException("Purchase price must be greater than 0.");
+        }
+        if (sellingPrice <= 0) {
+            throw new IllegalArgumentException("Selling price must be greater than 0.");
+        }
+        if (quantity < 0) {
+            throw new IllegalArgumentException("Quantity cannot be negative.");
+        }
 
         Product product = new Product(id, name, category, barcode, purchasePrice, sellingPrice, quantity);
         return product;

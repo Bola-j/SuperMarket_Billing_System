@@ -2,6 +2,8 @@ package com.supermarket.pos.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -100,6 +102,8 @@ public class DatabaseManager {
             stmt.execute(createSaleItemsTable);
             System.out.println("✓ Sale Items table created/verified");
 
+            seedSampleData(conn);
+
             System.out.println("✓ Database initialization completed successfully");
 
         } catch (SQLException e) {
@@ -130,5 +134,37 @@ public class DatabaseManager {
      */
     public static String getDatabasePath() {
         return "supermarket_pos.db";
+    }
+
+    private static void seedSampleData(Connection conn) throws SQLException {
+        String countSql = "SELECT COUNT(*) FROM products";
+        try (PreparedStatement countStmt = conn.prepareStatement(countSql);
+             ResultSet rs = countStmt.executeQuery()) {
+            if (rs.next() && rs.getInt(1) > 0) {
+                return;
+            }
+        }
+
+        String insertSql = "INSERT INTO products (name, category, barcode, purchase_price, selling_price, quantity) "
+                + "VALUES (?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
+            addSampleProduct(stmt, "Milk 1L", "Dairy", "100000001", 1.20, 1.75, 20);
+            addSampleProduct(stmt, "Bread", "Bakery", "100000002", 0.70, 1.20, 15);
+            addSampleProduct(stmt, "Eggs 12pk", "Dairy", "100000003", 1.50, 2.30, 12);
+            addSampleProduct(stmt, "Apples", "Produce", "100000004", 0.80, 1.50, 18);
+            addSampleProduct(stmt, "Rice 2kg", "Grocery", "100000005", 2.40, 3.80, 8);
+            addSampleProduct(stmt, "Coffee", "Beverage", "100000006", 3.00, 4.50, 6);
+        }
+    }
+
+    private static void addSampleProduct(PreparedStatement stmt, String name, String category, String barcode,
+                                         double purchasePrice, double sellingPrice, int quantity) throws SQLException {
+        stmt.setString(1, name);
+        stmt.setString(2, category);
+        stmt.setString(3, barcode);
+        stmt.setDouble(4, purchasePrice);
+        stmt.setDouble(5, sellingPrice);
+        stmt.setInt(6, quantity);
+        stmt.executeUpdate();
     }
 }

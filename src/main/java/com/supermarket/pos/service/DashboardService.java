@@ -2,10 +2,10 @@ package com.supermarket.pos.service;
 
 import com.supermarket.pos.dao.SaleDAO;
 import com.supermarket.pos.model.Product;
+import com.supermarket.pos.model.ProductSalesSummary;
 import com.supermarket.pos.model.Sale;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -71,6 +71,53 @@ public class DashboardService {
                 })
                 .filter(product -> product != null)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Get top selling products with quantity sold
+     * @param limit Number of top products to return
+     * @return List of product sales summaries
+     * @throws SQLException if database operation fails
+     */
+    public static List<ProductSalesSummary> getTopSellingSummaries(int limit) throws SQLException {
+        if (limit <= 0) {
+            throw new IllegalArgumentException("Limit must be greater than 0");
+        }
+
+        List<Sale> allSales = SaleDAO.getAllSales();
+        if (allSales == null || allSales.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        Map<String, Integer> productSalesCount = allSales.stream()
+                .flatMap(sale -> sale.getItems().stream())
+                .collect(Collectors.groupingBy(
+                        cartItem -> cartItem.getProduct().getName(),
+                        Collectors.summingInt(cartItem -> cartItem.getQuantity())
+                ));
+
+        return productSalesCount.entrySet().stream()
+                .sorted((a, b) -> b.getValue().compareTo(a.getValue()))
+                .limit(limit)
+                .map(entry -> new ProductSalesSummary(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Get total items sold across all sales
+     * @return Total quantity of items sold
+     * @throws SQLException if database operation fails
+     */
+    public static int getTotalItemsSold() throws SQLException {
+        List<Sale> sales = SaleDAO.getAllSales();
+        if (sales == null || sales.isEmpty()) {
+            return 0;
+        }
+
+        return sales.stream()
+                .flatMap(sale -> sale.getItems().stream())
+                .mapToInt(cartItem -> cartItem.getQuantity())
+                .sum();
     }
 
     /**

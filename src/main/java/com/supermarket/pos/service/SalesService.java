@@ -36,11 +36,9 @@ public class SalesService {
         // Update inventory for each item
         for (CartItem item : sale.getItems()) {
             int newQuantity = item.getProduct().getQuantity() - item.getQuantity();
+            item.getProduct().setQuantity(newQuantity);
             InventoryService.updateProduct(item.getProduct());
         }
-
-        // Clear the cart
-        CartService.clearCart();
 
         return saleId;
     }

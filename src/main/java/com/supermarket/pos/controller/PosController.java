@@ -1,11 +1,13 @@
 package com.supermarket.pos.controller;
 
+import com.supermarket.pos.model.CartItem;
 import com.supermarket.pos.model.Product;
 import com.supermarket.pos.service.CartService;
 import com.supermarket.pos.service.InventoryService;
 import com.supermarket.pos.service.SalesService;
 import com.supermarket.pos.view.PosView;
 import java.sql.SQLException;
+import java.util.List;
 import javafx.scene.layout.BorderPane;
 
 /**
@@ -60,15 +62,35 @@ public class PosController extends BaseController {
         }
 
         try {
+            List<CartItem> receiptItems = CartService.getCart();
+            double total = CartService.calculateTotal();
             int saleId = SalesService.completeSale();
-            CartService.clearCart();
             refreshCartState();
-            showInfo("Checkout Complete", "Sale completed successfully. Sale ID: " + saleId);
+            showInfo("Checkout Complete", buildReceipt(saleId, receiptItems, total));
         } catch (IllegalArgumentException ex) {
             showWarning("Checkout Failed", ex.getMessage());
         } catch (SQLException ex) {
             showError("Checkout Failed", ex.getMessage());
         }
+    }
+
+    private String buildReceipt(int saleId, List<CartItem> items, double total) {
+        StringBuilder receipt = new StringBuilder();
+        receipt.append("Sale ID: ").append(saleId).append("\n\n");
+        receipt.append("Items:\n");
+        for (CartItem item : items) {
+            receipt.append("- ")
+                    .append(item.getProduct().getName())
+                    .append(" x ")
+                    .append(item.getQuantity())
+                    .append(" @ $")
+                    .append(String.format("%.2f", item.getProduct().getSellingPrice()))
+                    .append(" = $")
+                    .append(String.format("%.2f", item.getSubtotal()))
+                    .append("\n");
+        }
+        receipt.append("\nTotal: $").append(String.format("%.2f", total));
+        return receipt.toString();
     }
 
     private void refreshCartState() {
