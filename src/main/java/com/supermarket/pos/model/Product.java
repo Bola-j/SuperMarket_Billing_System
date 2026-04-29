@@ -6,12 +6,13 @@ package com.supermarket.pos.model;
  */
 public class Product {
 
-    private int productId;
+    private int id;
     private String name;
-    private double price;
-    private int quantity;
     private String category;
     private String barcode;
+    private double purchasePrice;
+    private double sellingPrice;
+    private int quantity;
 
     /**
      * Default constructor
@@ -20,34 +21,48 @@ public class Product {
     }
 
     /**
-     * Constructor with basic fields
+     * Constructor with required fields
      */
-    public Product(int productId, String name, double price, int quantity) {
-        this.productId = productId;
+    public Product(String name, String barcode, double purchasePrice, double sellingPrice) {
         this.name = name;
-        this.price = price;
+        this.barcode = barcode;
+        this.purchasePrice = purchasePrice;
+        this.sellingPrice = sellingPrice;
+        this.quantity = 0;
+    }
+
+    /**
+     * Constructor with all fields except ID (for DB insert)
+     */
+    public Product(String name, String category, String barcode, double purchasePrice, double sellingPrice, int quantity) {
+        this.name = name;
+        this.category = category;
+        this.barcode = barcode;
+        this.purchasePrice = purchasePrice;
+        this.sellingPrice = sellingPrice;
         this.quantity = quantity;
     }
 
     /**
-     * Full constructor
+     * Full constructor with ID (for DB retrieve)
      */
-    public Product(int productId, String name, double price, int quantity, String category, String barcode) {
-        this.productId = productId;
+    public Product(int id, String name, String category, String barcode, double purchasePrice, double sellingPrice, int quantity) {
+        this.id = id;
         this.name = name;
-        this.price = price;
-        this.quantity = quantity;
         this.category = category;
         this.barcode = barcode;
+        this.purchasePrice = purchasePrice;
+        this.sellingPrice = sellingPrice;
+        this.quantity = quantity;
     }
 
     // Getters and Setters
-    public int getProductId() {
-        return productId;
+    public int getId() {
+        return id;
     }
 
-    public void setProductId(int productId) {
-        this.productId = productId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -56,22 +71,6 @@ public class Product {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
     }
 
     public String getCategory() {
@@ -90,15 +89,40 @@ public class Product {
         this.barcode = barcode;
     }
 
+    public double getPurchasePrice() {
+        return purchasePrice;
+    }
+
+    public void setPurchasePrice(double purchasePrice) {
+        this.purchasePrice = purchasePrice;
+    }
+
+    public double getSellingPrice() {
+        return sellingPrice;
+    }
+
+    public void setSellingPrice(double sellingPrice) {
+        this.sellingPrice = sellingPrice;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
     @Override
     public String toString() {
         return "Product{" +
-                "productId=" + productId +
+                "id=" + id +
                 ", name='" + name + '\'' +
-                ", price=" + price +
-                ", quantity=" + quantity +
                 ", category='" + category + '\'' +
                 ", barcode='" + barcode + '\'' +
+                ", purchasePrice=" + purchasePrice +
+                ", sellingPrice=" + sellingPrice +
+                ", quantity=" + quantity +
                 '}';
     }
 }

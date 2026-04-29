@@ -8,7 +8,6 @@ public class CartItem {
 
     private Product product;
     private int quantity;
-    private double totalPrice;
 
     /**
      * Default constructor
@@ -22,16 +21,17 @@ public class CartItem {
     public CartItem(Product product, int quantity) {
         this.product = product;
         this.quantity = quantity;
-        calculateTotalPrice();
     }
 
     /**
-     * Calculate total price for this cart item
+     * Get subtotal for this cart item (quantity * selling price)
+     * @return subtotal amount
      */
-    private void calculateTotalPrice() {
+    public double getSubtotal() {
         if (product != null) {
-            this.totalPrice = product.getPrice() * quantity;
+            return product.getSellingPrice() * quantity;
         }
+        return 0.0;
     }
 
     // Getters and Setters
@@ -41,7 +41,6 @@ public class CartItem {
 
     public void setProduct(Product product) {
         this.product = product;
-        calculateTotalPrice();
     }
 
     public int getQuantity() {
@@ -50,23 +49,14 @@ public class CartItem {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
-        calculateTotalPrice();
-    }
-
-    public double getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(double totalPrice) {
-        this.totalPrice = totalPrice;
     }
 
     @Override
     public String toString() {
         return "CartItem{" +
-                "product=" + product +
+                "product=" + (product != null ? product.getName() : "null") +
                 ", quantity=" + quantity +
-                ", totalPrice=" + totalPrice +
+                ", subtotal=" + getSubtotal() +
                 '}';
     }
 }

@@ -10,49 +10,58 @@ import java.util.List;
  */
 public class Sale {
 
-    private int saleId;
-    private LocalDateTime saleDate;
+    private int id;
+    private LocalDateTime datetime;
     private List<CartItem> items;
-    private double subtotal;
-    private double taxAmount;
     private double totalAmount;
-    private String paymentMethod;
-    private String cashierName;
+    private double totalProfit;
 
     /**
      * Default constructor
      */
     public Sale() {
         this.items = new ArrayList<>();
-        this.saleDate = LocalDateTime.now();
+        this.datetime = LocalDateTime.now();
+        this.totalAmount = 0.0;
+        this.totalProfit = 0.0;
     }
 
     /**
-     * Constructor with basic fields
+     * Constructor with datetime
      */
-    public Sale(int saleId, LocalDateTime saleDate, double totalAmount, String paymentMethod) {
-        this.saleId = saleId;
-        this.saleDate = saleDate;
-        this.totalAmount = totalAmount;
-        this.paymentMethod = paymentMethod;
+    public Sale(LocalDateTime datetime) {
+        this.datetime = datetime;
         this.items = new ArrayList<>();
+        this.totalAmount = 0.0;
+        this.totalProfit = 0.0;
+    }
+
+    /**
+     * Full constructor with all fields
+     */
+    public Sale(int id, LocalDateTime datetime, List<CartItem> items, double totalAmount, double totalProfit) {
+        this.id = id;
+        this.datetime = datetime;
+        this.items = items != null ? items : new ArrayList<>();
+        this.totalAmount = totalAmount;
+        this.totalProfit = totalProfit;
     }
 
     // Getters and Setters
-    public int getSaleId() {
-        return saleId;
+    public int getId() {
+        return id;
     }
 
-    public void setSaleId(int saleId) {
-        this.saleId = saleId;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public LocalDateTime getSaleDate() {
-        return saleDate;
+    public LocalDateTime getDatetime() {
+        return datetime;
     }
 
-    public void setSaleDate(LocalDateTime saleDate) {
-        this.saleDate = saleDate;
+    public void setDatetime(LocalDateTime datetime) {
+        this.datetime = datetime;
     }
 
     public List<CartItem> getItems() {
@@ -60,31 +69,17 @@ public class Sale {
     }
 
     public void setItems(List<CartItem> items) {
-        this.items = items;
+        this.items = items != null ? items : new ArrayList<>();
     }
 
     public void addItem(CartItem item) {
-        this.items.add(item);
+        if (item != null) {
+            this.items.add(item);
+        }
     }
 
     public void removeItem(CartItem item) {
         this.items.remove(item);
-    }
-
-    public double getSubtotal() {
-        return subtotal;
-    }
-
-    public void setSubtotal(double subtotal) {
-        this.subtotal = subtotal;
-    }
-
-    public double getTaxAmount() {
-        return taxAmount;
-    }
-
-    public void setTaxAmount(double taxAmount) {
-        this.taxAmount = taxAmount;
     }
 
     public double getTotalAmount() {
@@ -95,33 +90,22 @@ public class Sale {
         this.totalAmount = totalAmount;
     }
 
-    public String getPaymentMethod() {
-        return paymentMethod;
+    public double getTotalProfit() {
+        return totalProfit;
     }
 
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
-
-    public String getCashierName() {
-        return cashierName;
-    }
-
-    public void setCashierName(String cashierName) {
-        this.cashierName = cashierName;
+    public void setTotalProfit(double totalProfit) {
+        this.totalProfit = totalProfit;
     }
 
     @Override
     public String toString() {
         return "Sale{" +
-                "saleId=" + saleId +
-                ", saleDate=" + saleDate +
-                ", items=" + items.size() +
-                ", subtotal=" + subtotal +
-                ", taxAmount=" + taxAmount +
+                "id=" + id +
+                ", datetime=" + datetime +
+                ", itemCount=" + items.size() +
                 ", totalAmount=" + totalAmount +
-                ", paymentMethod='" + paymentMethod + '\'' +
-                ", cashierName='" + cashierName + '\'' +
+                ", totalProfit=" + totalProfit +
                 '}';
     }
 }
