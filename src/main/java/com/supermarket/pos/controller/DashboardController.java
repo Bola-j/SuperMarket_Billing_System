@@ -32,7 +32,7 @@ public class DashboardController extends BaseController {
         refreshDashboard();
     }
 
-    private void refreshDashboard() {
+    public void refreshDashboard() {
         loadTotals();
         loadTopSellingChart();
         loadCategoryChart();
@@ -46,8 +46,8 @@ public class DashboardController extends BaseController {
             double profit = DashboardService.getTotalProfit();
             int itemsSold = DashboardService.getTotalItemsSold();
 
-            view.getTotalRevenueLabel().setText(String.format("$%.2f", revenue));
-            view.getTotalProfitLabel().setText(String.format("$%.2f", profit));
+            view.getTotalRevenueLabel().setText(String.format("EGP %.2f", revenue));
+            view.getTotalProfitLabel().setText(String.format("EGP %.2f", profit));
             view.getTotalItemsSoldLabel().setText(String.valueOf(itemsSold));
         } catch (SQLException ex) {
             showError("Dashboard Error", ex.getMessage());
@@ -70,17 +70,9 @@ public class DashboardController extends BaseController {
 
     private void loadCategoryChart() {
         try {
-            List<Product> products = InventoryService.getAllProducts();
-            Map<String, Long> categoryCounts = products.stream()
-                    .collect(Collectors.groupingBy(
-                            product -> {
-                                String category = product.getCategory();
-                                return (category == null || category.isBlank()) ? "Uncategorized" : category;
-                            },
-                            Collectors.counting()
-                    ));
+            Map<String, Integer> categorySales = DashboardService.getCategorySales();
 
-            List<PieChart.Data> pieData = categoryCounts.entrySet().stream()
+            List<PieChart.Data> pieData = categorySales.entrySet().stream()
                     .map(entry -> new PieChart.Data(entry.getKey(), entry.getValue()))
                     .collect(Collectors.toList());
 

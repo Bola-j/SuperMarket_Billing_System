@@ -24,12 +24,22 @@ public class PosController extends BaseController {
 
     private void initialize() {
         view.getBarcodeField().setOnAction(event -> handleBarcodeEntry());
+        view.getAddButton().setOnAction(event -> handleDropdownEntry());
         view.getCheckoutButton().setOnAction(event -> handleCheckout());
 
+        loadProducts();
         refreshCartState();
         view.getBarcodeField().requestFocus();
     }
 
+    public void loadProducts() {
+        try {
+            List<Product> products = InventoryService.getAllProducts();
+            view.getProductComboBox().getItems().setAll(products);
+        } catch (SQLException ex) {
+            showError("Database Error", "Failed to load products: " + ex.getMessage());
+        }
+    }
     private void handleBarcodeEntry() {
         String barcode = view.getBarcodeField().getText() == null ? "" : view.getBarcodeField().getText().trim();
         if (barcode.isEmpty()) {
@@ -44,7 +54,15 @@ public class PosController extends BaseController {
                 return;
             }
 
-            CartService.addToCart(product, 1);
+            int quantity = 1;
+            try {
+                quantity = Integer.parseInt(view.getQuantityField().getText().trim());
+            } catch (NumberFormatException ex) {
+                showWarning("Invalid Quantity", "Please enter a valid number for quantity.");
+                return;
+            }
+
+            CartService.addToCart(product, quantity);
             refreshCartState();
             view.getBarcodeField().clear();
             view.getBarcodeField().requestFocus();
@@ -52,6 +70,31 @@ public class PosController extends BaseController {
             showWarning("Cannot Add Item", ex.getMessage());
         } catch (SQLException ex) {
             showError("Database Error", ex.getMessage());
+        }
+    }
+
+    private void handleDropdownEntry() {
+        Product selectedProduct = view.getProductComboBox().getValue();
+        if (selectedProduct == null) {
+            showWarning("Selection Required", "Please select a product from the dropdown.");
+            return;
+        }
+
+        int quantity = 1;
+        try {
+            quantity = Integer.parseInt(view.getQuantityField().getText().trim());
+        } catch (NumberFormatException ex) {
+            showWarning("Invalid Quantity", "Please enter a valid number for quantity.");
+            return;
+        }
+
+        try {
+            CartService.addToCart(selectedProduct, quantity);
+            refreshCartState();
+            view.getProductComboBox().setValue(null);
+            view.getQuantityField().setText("1");
+        } catch (IllegalArgumentException ex) {
+            showWarning("Cannot Add Item", ex.getMessage());
         }
     }
 
@@ -83,20 +126,20 @@ public class PosController extends BaseController {
                     .append(item.getProduct().getName())
                     .append(" x ")
                     .append(item.getQuantity())
-                    .append(" @ $")
+                    .append(" @ EGP ")
                     .append(String.format("%.2f", item.getProduct().getSellingPrice()))
-                    .append(" = $")
+                    .append(" = EGP ")
                     .append(String.format("%.2f", item.getSubtotal()))
                     .append("\n");
         }
-        receipt.append("\nTotal: $").append(String.format("%.2f", total));
+        receipt.append("\nTotal: EGP ").append(String.format("%.2f", total));
         return receipt.toString();
     }
 
     private void refreshCartState() {
         view.getCartItems().setAll(CartService.getCart());
         view.getCartTable().refresh();
-        view.getTotalLabel().setText(String.format("Total Price: $%.2f", CartService.calculateTotal()));
+        view.getTotalLabel().setText(String.format("Total Price: EGP %.2f", CartService.calculateTotal()));
     }
 
     public BorderPane getRoot() {

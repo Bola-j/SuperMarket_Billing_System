@@ -127,6 +127,17 @@ public class ProductDAO {
     }
 
     /**
+     * Reset all product quantities to zero
+     */
+    public static void resetAllQuantities() throws SQLException {
+        String sql = "UPDATE products SET quantity = 0";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.executeUpdate();
+        }
+    }
+
+    /**
      * Delete product by ID
      */
     public static void deleteProduct(int productId) throws SQLException {

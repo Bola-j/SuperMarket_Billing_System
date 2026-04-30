@@ -267,4 +267,26 @@ public class DashboardService {
                 .mapToInt(Product::getQuantity)
                 .sum();
     }
+
+    /**
+     * Get total quantity sold per category
+     * @return Map of category name to quantity sold
+     * @throws SQLException if database operation fails
+     */
+    public static Map<String, Integer> getCategorySales() throws SQLException {
+        List<Sale> allSales = SaleDAO.getAllSales();
+        if (allSales == null || allSales.isEmpty()) {
+            return Map.of();
+        }
+
+        return allSales.stream()
+                .flatMap(sale -> sale.getItems().stream())
+                .collect(Collectors.groupingBy(
+                        cartItem -> {
+                            String category = cartItem.getProduct().getCategory();
+                            return (category == null || category.isBlank()) ? "Uncategorized" : category;
+                        },
+                        Collectors.summingInt(cartItem -> cartItem.getQuantity())
+                ));
+    }
 }

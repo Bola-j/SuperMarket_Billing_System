@@ -1,3 +1,4 @@
+com\supermarket\pos\view\PosView$1.class
 com\supermarket\pos\view\ProductManagementView.class
 com\supermarket\pos\service\BaseService.class
 com\supermarket\pos\dao\SaleDAO.class
@@ -15,6 +16,7 @@ com\supermarket\pos\dao\BaseDAO.class
 com\supermarket\pos\view\DashboardView.class
 com\supermarket\pos\model\ProductSalesSummary.class
 com\supermarket\pos\controller\PosController.class
+com\supermarket\pos\Launcher.class
 com\supermarket\pos\service\InventoryService.class
 com\supermarket\pos\controller\InventoryController.class
 com\supermarket\pos\Main.class

@@ -56,7 +56,7 @@ public class InventoryController extends BaseController {
         }
     }
 
-    private void refreshInventory() {
+    public void refreshInventory() {
         try {
             List<Product> products = InventoryService.getAllProducts();
             view.getProducts().setAll(products);

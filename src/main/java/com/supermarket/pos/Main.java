@@ -35,6 +35,35 @@ public class Main extends Application {
             posTab.setClosable(false);
             productsTab.setClosable(false);
             inventoryTab.setClosable(false);
+
+            // Refresh dashboard when its tab is selected
+            dashboardTab.selectedProperty().addListener((obs, wasSelected, isNowSelected) -> {
+                if (isNowSelected) {
+                    dashboardController.refreshDashboard();
+                }
+            });
+
+            // Refresh POS product list when its tab is selected
+            posTab.selectedProperty().addListener((obs, wasSelected, isNowSelected) -> {
+                if (isNowSelected) {
+                    posController.loadProducts();
+                }
+            });
+
+            // Refresh Products list when its tab is selected
+            productsTab.selectedProperty().addListener((obs, wasSelected, isNowSelected) -> {
+                if (isNowSelected) {
+                    productController.refreshProducts();
+                }
+            });
+
+            // Refresh Inventory list when its tab is selected
+            inventoryTab.selectedProperty().addListener((obs, wasSelected, isNowSelected) -> {
+                if (isNowSelected) {
+                    inventoryController.refreshInventory();
+                }
+            });
+
             tabPane.getTabs().addAll(dashboardTab, posTab, productsTab, inventoryTab);
 
             Scene scene = new Scene(tabPane, 1200, 760);

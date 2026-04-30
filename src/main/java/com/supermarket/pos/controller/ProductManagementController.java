@@ -138,7 +138,7 @@ public class ProductManagementController extends BaseController {
         view.getQuantityField().setText(String.valueOf(product.getQuantity()));
     }
 
-    private void refreshProducts() {
+    public void refreshProducts() {
         try {
             List<Product> products = ProductDAO.getAllProducts();
             view.getProducts().setAll(products);

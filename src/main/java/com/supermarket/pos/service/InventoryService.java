@@ -144,4 +144,12 @@ public class InventoryService {
         }
         ProductDAO.deleteProduct(productId);
     }
+
+    /**
+     * Reset all product quantities to zero
+     * @throws SQLException if database operation fails
+     */
+    public static void resetAllQuantities() throws SQLException {
+        ProductDAO.resetAllQuantities();
+    }
 }

@@ -40,6 +40,9 @@ public class SalesService {
             InventoryService.updateProduct(item.getProduct());
         }
 
+        // Clear the cart after successful sale
+        CartService.clearCart();
+
         return saleId;
     }
 
@@ -108,5 +111,13 @@ public class SalesService {
             throw new IllegalArgumentException("Invalid sale ID");
         }
         SaleDAO.deleteSale(saleId);
+    }
+
+    /**
+     * Clear all sales history
+     * @throws SQLException if database operation fails
+     */
+    public static void clearAllSales() throws SQLException {
+        SaleDAO.clearAllSales();
     }
 }

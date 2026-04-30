@@ -34,8 +34,8 @@ public class DashboardView extends BaseView {
 
     public DashboardView() {
         this.root = new BorderPane();
-        this.totalRevenueLabel = new Label("$0.00");
-        this.totalProfitLabel = new Label("$0.00");
+        this.totalRevenueLabel = new Label("EGP 0.00");
+        this.totalProfitLabel = new Label("EGP 0.00");
         this.totalItemsSoldLabel = new Label("0");
         this.categoryData = FXCollections.observableArrayList();
 
@@ -89,7 +89,7 @@ public class DashboardView extends BaseView {
         topSellingChart.setLegendVisible(false);
         topSellingChart.setAnimated(false);
 
-        categoryChart.setTitle("Category Distribution");
+        categoryChart.setTitle("Best Selling Categories");
         categoryChart.setLegendVisible(true);
 
         HBox charts = new HBox(16, topSellingChart, categoryChart);

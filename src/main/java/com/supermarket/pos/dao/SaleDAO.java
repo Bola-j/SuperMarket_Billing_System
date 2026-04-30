@@ -189,6 +189,28 @@ public class SaleDAO {
         }
     }
 
+    /**
+     * Clear all sales history
+     */
+    public static void clearAllSales() throws SQLException {
+        String deleteItems = "DELETE FROM sale_items";
+        String deleteSales = "DELETE FROM sales";
+        try (Connection conn = DatabaseManager.getConnection()) {
+            boolean autoCommit = conn.getAutoCommit();
+            conn.setAutoCommit(false);
+            try (Statement stmt = conn.createStatement()) {
+                stmt.executeUpdate(deleteItems);
+                stmt.executeUpdate(deleteSales);
+                conn.commit();
+            } catch (SQLException ex) {
+                conn.rollback();
+                throw ex;
+            } finally {
+                conn.setAutoCommit(autoCommit);
+            }
+        }
+    }
+
     private static Sale mapSale(ResultSet rs) throws SQLException {
         Sale sale = new Sale();
         sale.setId(rs.getInt("id"));
